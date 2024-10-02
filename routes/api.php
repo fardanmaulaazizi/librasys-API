@@ -23,11 +23,11 @@ Route::get('/books', [BookController::class, 'index']);
 
 Route::middleware(['auth:sanctum', 'ability:manage-applications'])->group(function () {
     Route::post('/register', [UserController::class, 'register']);
-    Route::post('/users/{user}', [UserController::class, 'update']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
     Route::post('/books', [BookController::class, 'store']);
-    Route::post('/books/{book}', [BookController::class, 'update']);
+    Route::put('/books/{book}', [BookController::class, 'update']);
     Route::delete('/books/{book}', [BookController::class, 'destroy']);
 
     Route::get('/borrowings', [BorrowingController::class, 'index']);

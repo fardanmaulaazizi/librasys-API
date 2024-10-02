@@ -23,6 +23,7 @@ Route::get('/books', [BookController::class, 'index']);
 
 Route::middleware(['auth:sanctum', 'ability:manage-applications'])->group(function () {
     Route::post('/register', [UserController::class, 'register']);
+    Route::get('/users', [UserController::class, 'index']);
     Route::put('/users/{user}', [UserController::class, 'update']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
 

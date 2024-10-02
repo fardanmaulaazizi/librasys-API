@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $users = User::with(['role'])->paginate(10);
+        return response()->json([
+            'status' => true,
+            'message' => 'user retrieval successful',
+            'data' => $users
+        ]);
+    }
+
     public function register(Request $request)
     {
         if ($request->user()->role_id == 2 && ($request->role_id == 1 || $request->role_id == 2)) {

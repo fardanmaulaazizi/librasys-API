@@ -5,7 +5,7 @@
 </p>
 
 ## <p align="center">"API for Library Management System"</p>
-This is a library management system built with Laravel, designed to manage users, books, and borrowings, with three distinct user roles: Head of Library, Librarian, and Member. The system uses Laravel Sanctum to secure API authentication, providing safe and efficient token-based authentication for every API request.
+Library Management System API is an API built with Laravel for managing users, books, and borrowings. It features three user roles: Head of Library, Librarian, and Member. The API uses Laravel Sanctum for secure token-based authentication, ensuring safe access to library resources.
 ## Tech Stack
 
 ![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)

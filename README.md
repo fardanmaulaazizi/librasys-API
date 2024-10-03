@@ -1,66 +1,291 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# LibraSys
 
-## About Laravel
+API for Library Management.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Consists of 3 Types of User Roles
+#### Head of Library
+- Manage user data.
+- Manage books data.
+- Manage book borrowings data.
+- View personal borrowings
+#### Librarian
+- Manage user data (except data for the head of library).
+- Manage book data.
+- Manage book borrowings.
+- View personal borrowings
+#### Member
+- View all books.
+- View personal borrowings
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## API Reference
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Authentication
+#### Login
 
-### Premium Partners
+```http
+  GET /api/login
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `email` | `string` | Your Email |
+| `password` | `string` | Your Password |
 
-## Contributing
+### User
+#### Get all user
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```http
+  POST /api/users?page={page}
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>*.* Token obtained from login route response |
 
-## Code of Conduct
+| Query | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `page` | `int` | **Optional**. default value is 1 |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Register a user
 
-## Security Vulnerabilities
+```http
+  POST /api/register
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>*.* Token obtained from login route response |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | User Name |
+| `email` | `string` | User Email |
+| `password` | `string` | User Password |
+| `role_id` | `string` | User role. **"1"** for **"Head of Library"**,**"2"** for **"Librarian"**, **"3"** for **"Member"**|
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Update a user
+
+```http
+  PUT /api/users/{user_id}
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| URL parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `user_id` | `string` | The ID of the user to be changed |
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | User Name |
+| `email` | `string` | User Email |
+| `password` | `string` |  User Password |
+| `role_id` | `string` |  User role. **"1"** for **"Head of Library"**,**"2"** for **"Librarian"**, **"3"** for **"Member"**|
+
+#### Delete a user
+
+```http
+  DELETE /api/users/{user_id}
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| URL parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `user_id` | `int` | The ID of the user to be deleted |
+
+### Book
+#### Get all books
+```http
+  GET /api/books
+```
+| Query | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `page` | `int` | **Optional**. default value is 1 |
+
+#### Add new book
+```http
+  POST /api/books
+```
+
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `title` | `string` | Book Title|
+| `author` | `string` | Book Author|
+| `description` | `string` | Book Description|
+| `quantity` | `int` | Book Quantity|
+
+#### Update a book
+```http
+  PUT /api/books/22/{book_id}
+```
+
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| URL parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `book_id` | `int` | The ID of the book to be updated |
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `title` | `string` | Book Title|
+| `author` | `string` | Book Author|
+| `description` | `string` | Book Description|
+| `quantity` | `int` | Book Quantity|
+
+#### Delete a book
+```http
+  PUT /api/books/22/{book_id}
+```
+
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| URL parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `book_id` | `int` | The ID of the book to be deleted |
+
+### Borrowing
+#### Get all borrowings
+```http
+  GET /api/borrowings?page={page}
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| Query | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `page` | `int` | **Optional**. default value is 1 |
+
+#### Borrow a book
+```http
+  GET /api/borrowings
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `user_id` | `integer` | The ID of the user who borrowed the book|
+| `book_id` | `integer` | The ID of the borrowed book|
+| `quantity` | `int` | Book Quantity|
+| `loan_date` | `int` | The date the book was borrowed|
+
+### Return a book
+```http
+  PUT /api/borrowings/{borrowing_id}/return
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| URL parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `borrowing_id` | `int` |The ID of the borrowing to be returned |
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `user_id` | `integer` | The ID of the user who borrowed the book|
+| `book_id` | `integer` | The ID of the borrowed book|
+| `quantity` | `int` | Book Quantity|
+| `loan_date` | `int` | The date the book was borrowed|
+
+### Update a borrowing
+```http
+  PUT /api/borrowings/{borrowing_id}
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| URL parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `borrowing_id` | `int` |The ID of the borrowing to be returned |
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `user_id` | `integer` | The ID of the user who borrowed the book|
+| `book_id` | `integer` | The ID of the borrowed book|
+| `quantity` | `int` | Book Quantity|
+| `status` | `string` | Borrowing status **loaned** or **returned**|
+| `loan_date` | `int` | The date the book was borrowed|
+| `return_date` | `int` | **Optional**. The date the book was returned|
+
+### Delete a borrowing
+```http
+  DELETE /api/borrowings/{borrowing_id}
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| URL parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `borrowing_id` | `int` |The ID of the borrowing to be deleted |
+
+### Get user personal borrowing
+```http
+  GET /api/borrowings/user/{user_id}
+```
+| Header | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+
+| URL parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `user_id` | `int` |The ID of the user whose borrowing data will be retrieved |
+
+## Installation
+
+
+1.  Clone the repository to your local machine using the following commandt:
+
+    ```bash
+    git clone https://github.com/fardanmaulaazizi/librasys-API
+    cd librasys-API
+    ```
+
+2.  Adjust the application configuration in the `.env` file (especially the database settings). You can obtain the `.env` file by duplicating the `.env.example` file and renaming it to `.env`.
+
+3.  Generate the `APP_KEY` for the application using the command:
+
+    ```bash
+    php artisan key:generate
+    ```
+
+4.  Install the necessary dependencies for the application using the command:
+
+    ```bash
+    composer install
+    ```
+
+5.  Migrate the database along with its seeders using the command:
+
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+
+6.  Run the program<br> 
+((Optional) using composer)
+
+    ```bash
+    php artisan serve
+    ```

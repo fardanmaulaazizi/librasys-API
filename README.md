@@ -1,29 +1,114 @@
+# <p align="center">LibraSys</p>
 
-# LibraSys
+<p align="center" >
+    <img width="200" src="app_screenshots\librasys.png" alt="LibraSys Logo">
+</p>
 
-API for Library Management.
+## <p align="center">"API for Library Management System"</p>
+This is a library management system built with Laravel, designed to manage users, books, and borrowings, with three distinct user roles: Head of Library, Librarian, and Member. The system uses Laravel Sanctum to secure API authentication, providing safe and efficient token-based authentication for every API request.
+## Tech Stack
 
+![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
+![Sanctum](https://img.shields.io/badge/sanctum-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
 
-## Features
+## Table of contents
+   * [System Overview](#system-overview)
+   * [Installation](#installation)
+   * [Api Reference](#api-reference)
+      * [Authentication](#authentication)
+          * [Login](#login)
+      * [User](#user)
+          * [Get All User](#get-all-user)
+          * [Register a User](#register-a-user)
+          * [Update a User](#update-a-user)
+          * [Delete a User](#delete-a-user)
+      * [Book](#book)
+          * [Get All Books](#get-all-books)
+          * [Add New Book](#add-new-book)
+          * [Update a Book](#update-a-book)
+          * [Delete a book](#delete-a-book)
+      * [Borrowing](#borrowing)
+          * [Get All Borrowings](#get-all-borrowings)
+          * [Borrow a Book](#borrow-a-book)
+          * [Return a Book](#return-a-book)
+          * [Update a Borrowing](#update-a-borrowing)
+          * [Delete a Borrowing](#delete-a-borrowing)
+          * [Get User's Personal Borrowing](#get-users-personal-borrowing)
 
-Consists of 3 Types of User Roles
-#### Head of Library
-- Manage user data.
-- Manage books data.
-- Manage book borrowings data.
-- View personal borrowings
-#### Librarian
-- Manage user data (except data for the head of library).
-- Manage book data.
-- Manage book borrowings.
-- View personal borrowings
-#### Member
-- View all books.
-- View personal borrowings
+## System Overview
+### Key Features
+The application provides a robust management system with three distinct user roles, each having tailored access and capabilities:
+1. Head of Library
+    * **Full Control**: Can manage all aspects of the system, including user, book, and borrowing data.
+    * **User Management**: Add, update, or delete users (including librarians and members).
+    * **Book Management**: Oversee the addition, updating, and removal of book records.
+    * **Borrowing Management**: Track and manage all book borrowings.
+    * **Personal Borrowing History**: View borrowing records for personal use.
+2. Librarian
+    * **Comprehensive Management**: Can manage most system data, except for head of library user data.
+    * **User Management**: Add, update, or delete members (but not the head of library).
+    * **Book Management**: Handle book inventory, including adding and updating books.
+    * **Borrowing Management**: Oversee borrowing transactions, including borrowing and returning books.
+    * **Personal Borrowing History**: Access own borrowing records.
+3. Member
+    * **Book Browsing**: View and explore the entire collection of available books.
+    * **Borrowing History**: Access personal borrowing records to track borrowed books.
+  
+Secure authentication using tokens to ensure data access is protected.
 
+### Database Table Design
+<p align="center" >
+    <img width="300" src="app_screenshots\librasys_database.png" alt="LibraSys Database Table Design">
+</p>
 
+## Installation
 
+### Prerequisites
+Ensure you have the following installed on your machine:
+- PHP 8.2
+- Composer
 
+### Steps
+1. **Clone the Repository**
+    ```bash
+    git clone https://github.com/fardanmaulaazizi/librasys-API
+    cd librasys-API
+    ```
+
+2. **Install Dependencies**
+    ```bash
+    composer install
+    ```
+
+3. **Environment Setup**
+    Create a `.env` file by copying `.env.example`:
+    ```bash
+    cp .env.example .env
+    ```
+    Update your database credentials and other configurations in `.env`:
+    ```bash
+    DB_DATABASE=your_database
+    DB_USERNAME=your_username
+    DB_PASSWORD=your_password
+    ```
+
+4. **Generate Application Key**
+    ```bash
+    php artisan key:generate
+    ```
+
+5. **Run Migrations with seeder**
+    Create the necessary database tables by running migrations:
+    ```bash
+    php artisan migrate --seed
+    ```
+
+6. **Serve the Application**
+    Start the Laravel development server:
+    ```bash
+    php artisan serve
+    ```
+    The application will be accessible at `http://localhost:8000`.
 
 ## API Reference
 
@@ -33,259 +118,282 @@ Consists of 3 Types of User Roles
 ```http
   GET /api/login
 ```
-
-| Parameter | Type     | Description                |
+Request Body
+| Field | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `email` | `string` | Your Email |
-| `password` | `string` | Your Password |
+| `email` | `string` | **Required**. Your Email |
+| `password` | `string` | **Required**. Your Password |
 
 ### User
-#### Get all user
+#### Get All User
 
 ```http
   POST /api/users?page={page}
 ```
-| Header | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>*.* Token obtained from login route response |
+Authorization:<br>
+* Type: Bearer Token<br>
+* Required: Yes<br>
 
-| Query | Type     | Description                |
+Headers:
+
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `page` | `int` | **Optional**. default value is 1 |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
+
+Parameters:
+
+* `page` (optional): Specify the page number for paginated responses.
 
 #### Register a user
 
 ```http
   POST /api/register
 ```
-| Header | Type     | Description                |
+Authorization:<br>
+* Type: Bearer Token
+* Required: Yes
+
+Headers:
+
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>*.* Token obtained from login route response |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
+Request Body:
 
-| Parameter | Type     | Description                |
+| Field | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `name` | `string` | User Name |
-| `email` | `string` | User Email |
-| `password` | `string` | User Password |
-| `role_id` | `string` | User role. **"1"** for **"Head of Library"**,**"2"** for **"Librarian"**, **"3"** for **"Member"**|
+| `name` | `string` | **Required** User Name |
+| `email` | `string` | **Required** User Email |
+| `password` | `string` | **Required** User Password |
+| `role_id` | `string` | **Required** User role. **"1"** for **"Head of Library"**,**"2"** for **"Librarian"**, **"3"** for **"Member"**|
 
-#### Update a user
+#### Update a User
 
 ```http
   PUT /api/users/{user_id}
 ```
-| Header | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+Authorization:<br>
+* Type: Bearer Token<br>
+* Required: Yes<br>
 
-| URL parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `user_id` | `string` | The ID of the user to be changed |
+Headers:
 
-| Parameter | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `name` | `string` | User Name |
-| `email` | `string` | User Email |
-| `password` | `string` |  User Password |
-| `role_id` | `string` |  User role. **"1"** for **"Head of Library"**,**"2"** for **"Librarian"**, **"3"** for **"Member"**|
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-#### Delete a user
+Parameters:
+
+* `user_id` (required): The ID of the user to be changed.
+
+Request Body:
+
+| Field | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. User Name |
+| `email` | `string` | **Required**. User Email |
+| `password` | `string` |  **Required**. User Password |
+| `role_id` | `string` |  **Required**. User role. **"1"** for **"Head of Library"**,**"2"** for **"Librarian"**, **"3"** for **"Member"**|
+
+#### Delete a User
 
 ```http
   DELETE /api/users/{user_id}
 ```
-| Header | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+Headers:
 
-| URL parameter | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `user_id` | `int` | The ID of the user to be deleted |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
+
+Parameters:<br>
+* `user_id` (required): The ID of the user to be deleted.
 
 ### Book
-#### Get all books
+#### Get All Books
 ```http
-  GET /api/books
+  GET /api/books?page={page}
 ```
-| Query | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `page` | `int` | **Optional**. default value is 1 |
+Parameters:
 
-#### Add new book
+* `page` (optional): Specify the page number for paginated responses.
+
+#### Add New Book
 ```http
   POST /api/books
 ```
+Headers:
 
-| Header | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-| Parameter | Type     | Description                |
+Request Body:
+
+| Field | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `title` | `string` | Book Title|
-| `author` | `string` | Book Author|
-| `description` | `string` | Book Description|
-| `quantity` | `int` | Book Quantity|
+| `title` | `string` | **Required**. Book Title|
+| `author` | `string` | **Required**. Book Author|
+| `description` | `string` | **Required**. Book Description|
+| `quantity` | `int` | **Required**. Book Quantity|
 
-#### Update a book
+#### Update a Book
 ```http
   PUT /api/books/22/{book_id}
 ```
+Headers:
 
-| Header | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-| URL parameter | Type     | Description                |
+Parameters:
+
+* `book_id` (required): The ID of the book to be changed.
+
+Request Body:
+
+| Field | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `book_id` | `int` | The ID of the book to be updated |
+| `title` | `string` | **Required**. Book Title|
+| `author` | `string` | **Required**. Book Author|
+| `description` | `string` | **Required**. Book Description|
+| `quantity` | `int` | **Required**. Book Quantity|
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `title` | `string` | Book Title|
-| `author` | `string` | Book Author|
-| `description` | `string` | Book Description|
-| `quantity` | `int` | Book Quantity|
-
-#### Delete a book
+#### Delete a Book
 ```http
   PUT /api/books/22/{book_id}
 ```
+Headers:
 
-| Header | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-| URL parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `book_id` | `int` | The ID of the book to be deleted |
+Parameters:
+
+* `book_id` (required): The ID of the book to be deleted.
 
 ### Borrowing
-#### Get all borrowings
+#### Get All Borrowings
 ```http
   GET /api/borrowings?page={page}
 ```
-| Header | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+Headers:
 
-| Query | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `page` | `int` | **Optional**. default value is 1 |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
+
+Parameters:
+
+* `page` (optional): Specify the page number for paginated responses.
 
 #### Borrow a book
 ```http
   GET /api/borrowings
 ```
-| Header | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+Headers:
 
-| Parameter | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `user_id` | `integer` | The ID of the user who borrowed the book|
-| `book_id` | `integer` | The ID of the borrowed book|
-| `quantity` | `int` | Book Quantity|
-| `loan_date` | `int` | The date the book was borrowed|
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-### Return a book
+Request Body:
+
+| Field | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `user_id` | `integer` | **Required**. The ID of the user who borrowed the book|
+| `book_id` | `integer` | **Required**.  The ID of the borrowed book|
+| `quantity` | `int` | **Required**. Book Quantity|
+| `loan_date` | `int` | **Required**. The date the book was borrowed|
+
+#### Return a Book
 ```http
   PUT /api/borrowings/{borrowing_id}/return
 ```
-| Header | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+Headers:
 
-| URL parameter | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `borrowing_id` | `int` |The ID of the borrowing to be returned |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-| Parameter | Type     | Description                |
+Parameters:
+
+* `borrowing_id` (required): The ID of the borrowing to be returned.
+  
+Request Body:
+
+| Field | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `user_id` | `integer` | The ID of the user who borrowed the book|
-| `book_id` | `integer` | The ID of the borrowed book|
-| `quantity` | `int` | Book Quantity|
-| `loan_date` | `int` | The date the book was borrowed|
+| `user_id` | `integer` | **Required**. The ID of the user who borrowed the book|
+| `book_id` | `integer` | **Required**. The ID of the borrowed book|
+| `quantity` | `int` | **Required**. Book Quantity|
+| `loan_date` | `int` | **Required**. The date the book was borrowed|
 
-### Update a borrowing
+#### Update a Borrowing
 ```http
   PUT /api/borrowings/{borrowing_id}
 ```
-| Header | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+Headers:
 
-| URL parameter | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `borrowing_id` | `int` |The ID of the borrowing to be returned |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-| Parameter | Type     | Description                |
+Parameters:
+
+* `borrowing_id` (required): The ID of the borrowing to be updated.
+
+Request Body:
+
+| Field | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `user_id` | `integer` | The ID of the user who borrowed the book|
-| `book_id` | `integer` | The ID of the borrowed book|
-| `quantity` | `int` | Book Quantity|
-| `status` | `string` | Borrowing status **loaned** or **returned**|
-| `loan_date` | `int` | The date the book was borrowed|
+| `user_id` | `integer` | **Required**. The ID of the user who borrowed the book|
+| `book_id` | `integer` | **Required**. The ID of the borrowed book|
+| `quantity` | `int` | **Required**. Book Quantity|
+| `status` | `string` | **Required**. Borrowing status **loaned** or **returned**|
+| `loan_date` | `int` | **Required**. The date the book was borrowed|
 | `return_date` | `int` | **Optional**. The date the book was returned|
 
-### Delete a borrowing
+#### Delete a Borrowing
 ```http
   DELETE /api/borrowings/{borrowing_id}
 ```
-| Header | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+Headers:
 
-| URL parameter | Type     | Description                |
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `borrowing_id` | `int` |The ID of the borrowing to be deleted |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-### Get user personal borrowing
+Parameters:
+
+* `borrowing_id` (required): The ID of the borrowing to be deleted.
+
+#### Get User's Personal Borrowing
 ```http
   GET /api/borrowings/user/{user_id}
 ```
-| Header | Type     | Description                |
+Headers:
+
+| Header | Value     | Description                |
 | :-------- | :------- | :------------------------- |
-| `Authorization` | `string` | **Bearer Token <token>**. Token obtained from login route response |
+| `Authorization` | `Bearer {token}` | **Required**. Authentication token |
+| `Content-Type` | `application/json` | Specifies the format of the request body |
 
-| URL parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `user_id` | `int` |The ID of the user whose borrowing data will be retrieved |
+Parameters:
 
-## Installation
-
-
-1.  Clone the repository to your local machine using the following commandt:
-
-    ```bash
-    git clone https://github.com/fardanmaulaazizi/librasys-API
-    cd librasys-API
-    ```
-
-2.  Adjust the application configuration in the `.env` file (especially the database settings). You can obtain the `.env` file by duplicating the `.env.example` file and renaming it to `.env`.
-
-3.  Generate the `APP_KEY` for the application using the command:
-
-    ```bash
-    php artisan key:generate
-    ```
-
-4.  Install the necessary dependencies for the application using the command:
-
-    ```bash
-    composer install
-    ```
-
-5.  Migrate the database along with its seeders using the command:
-
-    ```bash
-    php artisan migrate:fresh --seed
-    ```
-
-6.  Run the program<br> 
-((Optional) using composer)
-
-    ```bash
-    php artisan serve
-    ```
+* `user_id` (required): The ID of the user whose borrowing data will be retrieved.

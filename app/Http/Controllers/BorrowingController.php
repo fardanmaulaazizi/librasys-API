@@ -80,6 +80,13 @@ class BorrowingController extends Controller
             ]);
         }
 
+        if ($borrowing->status == 'returned') {
+            return response()->json([
+                'status' => false,
+                'message' => 'the book has already been returned',
+                'data' => $borrowing
+            ]);
+        }
         if ($borrowing->loan_date > $request->return_date) {
             return response()->json([
                 'status' => false,
@@ -162,9 +169,11 @@ class BorrowingController extends Controller
     }
     public function destroy(Borrowing $borrowing)
     {
-        $book = $borrowing->book;
-        $book->quantity += $borrowing->quantity;
-        $book->save();
+        if ($borrowing->status == 'loaned') {
+            $book = $borrowing->book;
+            $book->quantity += $borrowing->quantity;
+            $book->save();
+        }
         $borrowing->delete();
         return response()->json([
             'status' => true,

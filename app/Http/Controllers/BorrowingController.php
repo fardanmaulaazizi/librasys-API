@@ -184,6 +184,12 @@ class BorrowingController extends Controller
 
     public function user(User $user)
     {
+        if (auth()->user()->role_id == 3 && auth()->user()->role_id != $user->role_id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'members cannot view borrowing data of other members.',
+            ]);
+        }
         $borrowings = Borrowing::with(['user.role', 'book'])->where('user_id', $user->id)->paginate(10);
         return response()->json([
             'status' => true,

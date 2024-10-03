@@ -36,8 +36,9 @@ Route::middleware(['auth:sanctum', 'ability:manage-applications'])->group(functi
     Route::put('/borrowings/{borrowing}/return', [BorrowingController::class, 'return']);
     Route::put('/borrowings/{borrowing}', [BorrowingController::class, 'update']);
     Route::delete('/borrowings/{borrowing}', [BorrowingController::class, 'destroy']);
-    Route::get('/borrowings/user/{user}', [BorrowingController::class, 'user']);
 });
+
+Route::get('/borrowings/user/{user}', [BorrowingController::class, 'user'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function () {
     // Menggambil data buku yang dipinjam pribadi

@@ -32,9 +32,10 @@ Route::middleware(['auth:sanctum', 'ability:manage-applications'])->group(functi
     Route::delete('/books/{book}', [BookController::class, 'destroy']);
 
     Route::get('/borrowings', [BorrowingController::class, 'index']);
-    Route::post('/borrowings', [BorrowingController::class, 'store']);
-    Route::delete('/borrowings/{borrowing}', [BorrowingController::class, 'destroy']);
+    Route::post('/borrowings', [BorrowingController::class, 'borrow']);
+    Route::put('/borrowings/{borrowing}/return', [BorrowingController::class, 'return']);
     Route::put('/borrowings/{borrowing}', [BorrowingController::class, 'update']);
+    Route::delete('/borrowings/{borrowing}', [BorrowingController::class, 'destroy']);
     Route::get('/borrowings/user/{user}', [BorrowingController::class, 'user']);
 });
 

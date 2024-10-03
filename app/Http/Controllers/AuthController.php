@@ -35,9 +35,7 @@ class AuthController extends Controller
 
         $dataUser =
             User::with('role')->where('email', $request->email)->first();
-        if ($dataUser->role_id == 1) {
-            $token = $dataUser->createToken('authToken', ['manage-applications', 'add-librarian'])->plainTextToken;
-        } elseif ($dataUser->role_id == 2) {
+        if ($dataUser->role_id == 1 || $dataUser->role_id == 2) {
             $token = $dataUser->createToken('authToken', ['manage-applications'])->plainTextToken;
         } else {
             $token = $dataUser->createToken('authToken', [])->plainTextToken;

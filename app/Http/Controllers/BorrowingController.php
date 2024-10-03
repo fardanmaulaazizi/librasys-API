@@ -21,7 +21,7 @@ class BorrowingController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function borrow(Request $request)
     {
         $data = new Borrowing();
         $rules = [
@@ -43,7 +43,7 @@ class BorrowingController extends Controller
         if ($book->quantity < $request->quantity) {
             return response()->json([
                 'status' => false,
-                'message' => 'book quantity not enough',
+                'message' => 'cannot add borrowing data because the book quantity is not enough',
                 'data' => $book
             ]);
         }
@@ -64,7 +64,7 @@ class BorrowingController extends Controller
         ]);
     }
 
-    public function update(Request $request, Borrowing $borrowing)
+    public function return(Request $request, Borrowing $borrowing)
     {
         $rules = [
             'borrowing_id' => 'required',
@@ -100,6 +100,66 @@ class BorrowingController extends Controller
         ]);
     }
 
+    public function update(Request $request, Borrowing $borrowing)
+    {
+        $rules = [
+            'user_id' => 'required',
+            'book_id' => 'required',
+            'quantity' => 'required',
+            'status' => 'required',
+            'loan_date' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'borrrowing data update failed',
+                'data' => $validator->errors()
+            ]);
+        }
+
+        if ($borrowing->loan_date > $request->loan_date) {
+            return response()->json([
+                'status' => false,
+                'message' => 'cannot update borrowing data because the return date before the date the book was borrowed',
+            ]);
+        }
+
+        if ($borrowing->status == 'loaned') {
+            $oldBook = Book::find($borrowing->book_id);
+            $oldBookQuantity = $oldBook->quantity;
+            $oldBook->quantity += $borrowing->quantity;
+            $oldBook->save();
+        }
+
+        $newBook = Book::find($request->book_id);
+        if ($request->quantity > $newBook->quantity) {
+            $oldBook->quantity = $oldBookQuantity;
+            $oldBook->save();
+            return response()->json([
+                'status' => false,
+                'message' => 'cannot update borrowing data because the book quantity is not enough',
+            ]);
+        }
+        if ($request->status == 'loaned') {
+            $newBook->quantity -= $request->quantity;
+            $newBook->save();
+        }
+
+        $borrowing->user_id = $request->user_id;
+        $borrowing->book_id = $request->book_id;
+        $borrowing->quantity = $request->quantity;
+        $borrowing->status = $request->status;
+        $borrowing->loan_date = $request->loan_date;
+        $borrowing->return_date = $request->return_date;
+        $borrowing->save();
+        return response()->json([
+            'status' => true,
+            'message' => 'borrowing data update successful',
+            'data' => $borrowing
+        ]);
+    }
     public function destroy(Borrowing $borrowing)
     {
         $book = $borrowing->book;
